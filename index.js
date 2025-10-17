@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -8,6 +9,13 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Enable CORS for all origins (or specify allowed origins)
+app.use(cors({
+  origin: '*', // Allow all origins; for production, specify your frontend URL (e.g., 'https://your-frontend.vercel.app')
+  methods: ['GET'], // Allow only GET requests
+  allowedHeaders: ['Content-Type'],
+}));
 
 // Etherscan API base URL
 const ETHERSCAN_API = 'https://api.etherscan.io/v2/api';
@@ -37,7 +45,12 @@ app.get('/api', async (req, res) => {
   }
 });
 
+// Root route for clarity
+app.get('/', (req, res) => {
+  res.send('Etherscan Proxy API. Use /api endpoint with Etherscan parameters.');
+});
+
 // Start the server
 app.listen(port, () => {
-  console.log(`Proxy server running on ${port}`);
+  console.log(`Proxy server running on http://localhost:${port}`);
 });
